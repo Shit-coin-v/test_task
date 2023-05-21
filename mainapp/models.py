@@ -7,7 +7,7 @@ class User(models.Model):
     avatar = models.ImageField(upload_to='user/', blank=True)
 
     def __str__(self):
-        return str(f'{self.name}, {self.last_name}')
+        return str(f'{self.name} {self.last_name}')
 
 class Post(models.Model):
     content = models.TextField(verbose_name='Пост')
