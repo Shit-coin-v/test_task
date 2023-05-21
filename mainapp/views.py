@@ -1,7 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 from mainapp.models import User, Post, Like
 from mainapp.serializers import(
-    PostSerializer, UserSerializer, LikeSerializer,
+    PostSerializer, UserSerializer, 
+    DislikeSerializer, LikeSerializer,
     RegistrationSerializer, 
     AuthenticationSeriallizer,
 ) 
@@ -32,6 +33,10 @@ class PostView(ModelViewSet):
 class LikeView(ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
+
+class DislikeView(ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = DislikeSerializer
 
 class RegistrationView(APIView):
     def post(self, request):

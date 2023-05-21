@@ -1,8 +1,17 @@
 from rest_framework import serializers, exceptions
 
 from mainapp.models import(
-    User, Post, Like,
+    User, Post, Like, Dislike
 )
+
+
+class DislikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dislike
+        fields = (
+            'id',
+            'name', 'content', 'date', 
+        )
 
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -22,14 +31,15 @@ class PostSerializer(serializers.ModelSerializer):
         )
 
 class UserSerializer(serializers.ModelSerializer):
-    post = PostSerializer(read_only=True, many=True)
-    like = LikeSerializer(read_only=True, many=True)
+    posts = PostSerializer(read_only=True, many=True)
+    likes = LikeSerializer(read_only=True, many=True)
+    dislikes = DislikeSerializer(read_only=True, many=True)
     class Meta:
         model = User
         fields = (
             'id', 
             'name', 'last_name', 'avatar',
-            'posts', 'likes',
+            'posts', 'likes', 'dislikes',
         )
 class RegistrationSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
