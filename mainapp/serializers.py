@@ -4,31 +4,34 @@ from mainapp.models import(
     User, Post, Like,
 )
 
-class PostSerializer(serializers.Serializer):
-    class Meta:
-        model = Post
-        fields = (
-            'id', 'body', 'image',
-            'user_name', 'likes',
-        )
 
-class UserSerializer(serializers.Serializer):
-    class Meta:
-        model = User
-        fields = (
-            'id', 
-            'name', 'last_name',
-        )
-
-class LikeSerializer(serializers.Serializer):
+class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = (
             'id',
-            'user', 'post', 'date',
+            'name', 'content', 'date', 
+        )
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = (
+            'id', 
+            'content', 'image',
+            'time_create', 'name',
         )
 
-class RegistrationSerializer(serializers.Serializer):
+class UserSerializer(serializers.ModelSerializer):
+    post = PostSerializer(read_only=True, many=True)
+    like = LikeSerializer(read_only=True, many=True)
+    class Meta:
+        model = User
+        fields = (
+            'id', 
+            'name', 'last_name', 'avatar',
+            'posts', 'likes',
+        )
+class RegistrationSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
     password = serializers.CharField()
     email = serializers.CharField()
@@ -40,6 +43,6 @@ class RegistrationSerializer(serializers.Serializer):
             raise exceptions.ValidationError('Пароль слишком длинный')
         return value
 
-class AuthenticationSeriallizer(serializers.Serializer):
+class AuthenticationSeriallizer(serializers.ModelSerializer):
     username = serializers.CharField()
     password = serializers.CharField()

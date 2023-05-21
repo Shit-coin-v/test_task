@@ -10,8 +10,8 @@ from mainapp.views import(
 router = DR()
 
 router.register('user', UserView)
-router.register('post', PostView)
-router.register('like', LikeView)
+router.register('posts', PostView)
+router.register('likes', LikeView)
 
 
 urlpatterns = [

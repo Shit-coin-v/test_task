@@ -20,13 +20,14 @@ from rest_framework.status import(
 
 from rest_framework.views import APIView
 
-class PostView(ModelViewSet):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
 
 class UserView(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+class PostView(ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
 class LikeView(ModelViewSet):
     queryset = Like.objects.all()
