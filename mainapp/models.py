@@ -8,6 +8,14 @@ class User(models.Model):
 
     def __str__(self):
         return str(f'{self.name} {self.last_name}')
+    
+    @property
+    def like_amount(self):
+        return self.like.count()
+
+    @property
+    def dislike_amount(self):
+        return self.dislike.count()
 
 class Post(models.Model):
     content = models.TextField(verbose_name='Пост')
@@ -33,11 +41,4 @@ class Dislike(models.Model):
 
     def __str__(self):
         return str(self.name)
-
-@property
-def like_amount(self):
-    return self.like.count()
-
-@property
-def dislike_amount(self):
-    return self.dislike.count()
+    
