@@ -42,7 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id', 
-            'user_name', 'last_name',
+            'username', 'last_name',
             'posts', 'likes', 'dislikes',
         )
 class RegistrationSerializer(serializers.ModelSerializer):
