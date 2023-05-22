@@ -1,7 +1,11 @@
 from rest_framework import serializers, exceptions
 
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 from mainapp.models import(
-    User, Post, Like, Dislike
+    Post, Like, Dislike
 )
 
 
@@ -10,7 +14,7 @@ class DislikeSerializer(serializers.ModelSerializer):
         model = Dislike
         fields = (
             'id',
-            'name', 'content', 'date', 
+            'user', 'post', 'date', 
         )
 
 
@@ -19,7 +23,7 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields = (
             'id',
-            'name', 'content', 'date', 
+            'user', 'post', 'date', 
         )
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,7 +31,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = (
             'id', 
             'content', 'image',
-            'time_create', 'name',
+            'time_create', 'user',
         )
 
 class UserSerializer(serializers.ModelSerializer):
@@ -38,7 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id', 
-            'name', 'last_name', 'avatar',
+            'user_name', 'last_name',
             'posts', 'likes', 'dislikes',
         )
 class RegistrationSerializer(serializers.ModelSerializer):

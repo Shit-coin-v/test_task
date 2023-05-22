@@ -1,5 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
-from mainapp.models import User, Post, Like
+from mainapp.models import Post, Like, Dislike
 from mainapp.serializers import(
     PostSerializer, UserSerializer, 
     DislikeSerializer, LikeSerializer,
@@ -9,7 +9,7 @@ from mainapp.serializers import(
 
 from django.contrib.auth import get_user_model
 
-Get_user = get_user_model()
+User = get_user_model()
 
 from django.contrib.auth.hashers import check_password
 from rest_framework.authtoken.models import Token
@@ -35,7 +35,7 @@ class LikeView(ModelViewSet):
     serializer_class = LikeSerializer
 
 class DislikeView(ModelViewSet):
-    queryset = Like.objects.all()
+    queryset = Dislike.objects.all()
     serializer_class = DislikeSerializer
 
 class RegistrationView(APIView):
@@ -47,13 +47,13 @@ class RegistrationView(APIView):
         password = data.get('password')
         email = data.get('email')
 
-        if Get_user.objects.filter(username=username).exists():
+        if User.objects.filter(username=username).exists():
             return Response(
                 {'message': 'Пользователь с таким именем сущуствует'},
                 status=HTTP_403_FORBIDDEN
             )
 
-        user = Get_user.objects.create_user(
+        user = User.objects.create_user(
             username=username,
             password=password,
             email=email,
@@ -70,7 +70,7 @@ class AuthenticationView(APIView):
         username = data.get('username')
         password = data.get('password')
 
-        user = Get_user.objects.filter(username=username).first()
+        user = User.objects.filter(username=username).first()
 
         if user is not None:
             if check_password(password, user.password):
