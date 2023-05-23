@@ -45,7 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
             'username', 'last_name',
             'posts', 'likes', 'dislikes',
         )
-class RegistrationSerializer(serializers.ModelSerializer):
+class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
     email = serializers.CharField()
@@ -57,6 +57,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             raise exceptions.ValidationError('Пароль слишком длинный')
         return value
 
-class AuthenticationSeriallizer(serializers.ModelSerializer):
+class AuthenticationSeriallizer(serializers.
+                                Serializer):
     username = serializers.CharField()
     password = serializers.CharField()

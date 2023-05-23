@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from mainapp.models import Post, Like, Dislike
 from mainapp.serializers import(
     PostSerializer, UserSerializer, 
@@ -14,6 +14,7 @@ User = get_user_model()
 from django.contrib.auth.hashers import check_password
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.status import(
     HTTP_200_OK, HTTP_201_CREATED,
     HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN,
@@ -30,13 +31,58 @@ class PostView(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-class LikeView(ModelViewSet):
+    @action(methods=['post',], detail=True)
+    def set_like(self, request, *args, **kwargs):
+        post = self.get_object()
+        user = request.user
+        like = Like.objects.filter(user=user, post=post)
+        dislike = Dislike.objects.filter(user=user, post=post)
+        if like.exists():
+            like.delete()
+            return Response({'message': 'Like was deleted'})
+        elif dislike.exists():
+            dislike.delete()
+        Like.objects.create(user=user, post=post)
+        return Response({'message': 'you are like this post'})
+    
+    @action(methods=['post',], detail=True)
+    def set_dislike(self, request, *args, **kwargs):
+        post = self.get_object()
+        user = request.user
+        like = Like.objects.filter(user=user, post=post)
+        dislike = Dislike.objects.filter(user=user, post=post)
+        if dislike.exists():
+            dislike.delete()
+            return Response({'message': 'Like was deleted'})
+        elif like.exists():
+            like.delete()
+        Dislike.objects.create(user=user, post=post)
+        return Response({'message': 'you are like this post'})
+
+class LikeView(ReadOnlyModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
+    
+    @action(methods=['get', ], detail=False)
+    def get_like(self, request, *args, **kwargs):
+        date_from = request.query_params.get('date_from', None)
+        date_to = request.query_params.get('date_to', None)
+
+        if date_from == None or date_to == None:
+            return Response({'message': 'Set dates in query params'})
+        elif date_from == None and date_to == None:
+            return Response({'message': 'Set dates in query params'})
+        like_amount = Like.objects.filter(
+            date__gte=date_from, date__lte=date_to
+        ).count()
+        return Response({'message': like_amount})
+
 
 class DislikeView(ModelViewSet):
     queryset = Dislike.objects.all()
     serializer_class = DislikeSerializer
+
+
 
 class RegistrationView(APIView):
     def post(self, request):
@@ -77,7 +123,4 @@ class AuthenticationView(APIView):
                 token, _ = Token.objects.get_or_create(user=user)
                 return Response({'token': token.key}, HTTP_200_OK)
             return Response({'error': 'Пароль не верный'}, HTTP_400_BAD_REQUEST)
-        return Response({'error': 'Такого пользователя не существует'}, HTTP_400_BAD_REQUEST)
-    
-    
-    
+        return Response({'error': 'Такого пользователя не существует'}, HTTP_400_BAD_REQUEST)    
