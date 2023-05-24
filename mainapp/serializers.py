@@ -57,7 +57,6 @@ class RegistrationSerializer(serializers.Serializer):
             raise exceptions.ValidationError('Пароль слишком длинный')
         return value
 
-class AuthenticationSeriallizer(serializers.
-                                Serializer):
+class AuthenticationSeriallizer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
