@@ -65,11 +65,11 @@ class LikeView(ReadOnlyModelViewSet):
     
     @action(methods=['get', ], detail=False)
     def get_like(self, request, *args, **kwargs):
-        date_from = request.query_params.get('date_from', None)
+        date_from = request.query_params.get('date_from', None)  # квери параметры пишутся так: http://127.0.0.1:8000/api/likes/get_like/?date_from=2023-5-20&date_to=2023-5-30
         date_to = request.query_params.get('date_to', None)
 
         if date_from == None or date_to == None:
-            return Response({'message': 'Set dates in query params'})
+            return Response({'message': 'Вы не ставили одну дату'})
         elif date_from == None and date_to == None:
             return Response({'message': 'Set dates in query params'})
         like_amount = Like.objects.filter(
