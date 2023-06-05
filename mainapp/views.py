@@ -7,6 +7,7 @@ from mainapp.serializers import(
     AuthenticationSeriallizer,
 ) 
 
+from mainapp.send_gmail import send_msg
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -105,6 +106,8 @@ class RegistrationView(APIView):
             email=email,
         )
 
+        send_msg.delay(email)
+
         token = Token.objects.create(user=user)
         return Response({'token': token.key}, HTTP_201_CREATED)
 
@@ -123,4 +126,10 @@ class AuthenticationView(APIView):
                 token, _ = Token.objects.get_or_create(user=user)
                 return Response({'token': token.key}, HTTP_200_OK)
             return Response({'error': 'Пароль не верный'}, HTTP_400_BAD_REQUEST)
-        return Response({'error': 'Такого пользователя не существует'}, HTTP_400_BAD_REQUEST)    
+        return Response({'error': 'Такого пользователя не существует'}, HTTP_400_BAD_REQUEST)  
+
+{
+    "username": "shitcoin",
+    "email": "vasyakriv8688@gmail.com",
+    "password": "qazwsx123!"
+}  

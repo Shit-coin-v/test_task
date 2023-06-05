@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+
+  db:
+    container_name: starnavi_db
+    image: postgres:12.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+  
+  web:
+    container_name: test_task_web
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./media/:/media
+      - ./static/:/static
+      - ./:/app
+    entrypoint: ./wsgi-entrypoint.sh
+    depends_on:
+      - db
+
+  redis:
+    restart: always
+    container_name: test_task_redis
+    image: redis:alpine
+
+  celery:
+    image: celery
+    container_name: test_task_celery
+    command: celery -A core worker -l info
+    build:
+      context: .
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+      - web
+      - redis
+    restart: always
+
+volumes:
+  media:
+  static:
+  postgres_data:
